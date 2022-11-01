@@ -1,38 +1,101 @@
+html {
+  box-sizing: border-box;
+  font-weight: 400;
+  overflow: hidden;
+}
+
+body {
+  font-family: sans-serif;
+  height: 100vh;
+  background-color: #121214f0;
+
+}
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  flex-direction: column;
+}
+
+.welcome-header {
+  font-size: 52px;
   color: white;
+  font-weight: 600;
 }
 
-.App-link {
-  color: #61dafb;
+
+.welcome-header-container {
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.input-field-container {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-shadow: 7px 8px 19px -5px rgba(0,0,0,0.47);
+  -webkit-box-shadow: 7px 8px 19px -5px rgba(0,0,0,0.47);
+  -moz-box-shadow: 7px 8px 19px -5px rgba(0,0,0,0.47);
+}
+
+.input-field {
+  padding: 10px;
+  width: 100%;
+  font-size: 20px;
+}
+
+.input-field:focus{
+  outline: none;
+}
+
+
+.sign-in-form-container {
+
+}
+
+
+
+
+.sign-in-form {
+  width: 100%;
+  
+}
+
+.main-buttons-container {
+  margin-top: 50px;
+}
+
+
+.continue-btn {
+  border: none;
+  padding: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  font-size: 17px;
+  border-radius: 10px;
+  background-color: #070808aa;
+  color: rgb(208, 228, 231);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 7px 6px 19px 0px rgba(0,0,0,0.47);
+  -webkit-box-shadow: 7px 6px 19px 0px rgba(0,0,0,0.47);
+  -moz-box-shadow: 7px 6px 19px 0px rgba(0,0,0,0.47);
+  margin-top: 20px;
+  min-width: 230px;
+
+}
+
+
+
+.continue-btn:hover {
+  background-color: rgba(97, 213, 95, 0.528);
 }
