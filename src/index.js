@@ -2,22 +2,38 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import {
+  createRoutesFromElements,
   createBrowserRouter,
   RouterProvider,
-  Route,
-} from "react-router-dom";
+  Route
+} from 'react-router-dom';
 import Welcome from './components/pages/welcome/Welcome';
-import TableSearch from './components/pages/tableSearch/TableSearch'
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Welcome/>,
-  },
-  {
-    path: "/tables",
-    element: <TableSearch/>,
-  },
-]);
+import TableSearch from './components/pages/tableSearch/TableSearch';
+import Root from './components/pages/Root';
+// const router = createBrowserRouter(
+//   [
+//     {
+//       path: '/',
+//       element: <Welcome />,
+//       children: [
+//         {
+//           path: 'tables',
+//           element: <TableSearch />
+//         }
+//       ]
+//     }
+//   ],
+//   { basename: '/home' }
+// );
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<Root />}>
+      <Route path="/login" element={<Welcome />} />
+      <Route path="/tables" element={<TableSearch />} />
+    </Route>
+  )
+);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

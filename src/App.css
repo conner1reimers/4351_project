@@ -8,6 +8,7 @@ body {
   font-family: sans-serif;
   height: 100vh;
   background-color: #121214f0;
+  box-sizing: border-box;
 
 }
 
@@ -28,13 +29,21 @@ body {
   font-weight: 600;
 }
 
+.welcome-subheader {
+  font-size: 25px;
+  color: white;
+  font-weight: 500;
+  margin-bottom: 50px;
+  transform: translateY(-30px);
+}
 
 .welcome-header-container {
   min-height: 200px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
+  flex-direction: column;
 
 }
 
@@ -42,15 +51,20 @@ body {
   width: 100%;
   margin-top: 10px;
   margin-bottom: 10px;
-  box-shadow: 7px 8px 19px -5px rgba(0,0,0,0.47);
-  -webkit-box-shadow: 7px 8px 19px -5px rgba(0,0,0,0.47);
-  -moz-box-shadow: 7px 8px 19px -5px rgba(0,0,0,0.47);
+  box-shadow: 7px 8px 19px -5px rgba(0,0,0,0.27);
+  -webkit-box-shadow: 7px 8px 19px -5px rgba(0,0,0,0.27);
+  -moz-box-shadow: 7px 8px 19px -5px rgba(0,0,0,0.27);
+
+
 }
 
 .input-field {
   padding: 10px;
   width: 100%;
   font-size: 20px;
+  border-radius: 8px;
+  box-sizing: border-box;
+
 }
 
 .input-field:focus{
@@ -58,25 +72,24 @@ body {
 }
 
 
-.sign-in-form-container {
 
-}
-
-
-
-
-.sign-in-form {
+.inner-form-container {
   width: 100%;
-  
 }
 
 .main-buttons-container {
   margin-top: 50px;
 }
 
+.reset-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgb(208, 228, 231);
+  font-weight: 500;
+}
 
 .continue-btn {
-  border: none;
   padding: 20px;
   padding-left: 30px;
   padding-right: 30px;
@@ -85,17 +98,106 @@ body {
   background-color: #070808aa;
   color: rgb(208, 228, 231);
   font-weight: 600;
-  cursor: pointer;
-  box-shadow: 7px 6px 19px 0px rgba(0,0,0,0.47);
-  -webkit-box-shadow: 7px 6px 19px 0px rgba(0,0,0,0.47);
-  -moz-box-shadow: 7px 6px 19px 0px rgba(0,0,0,0.47);
+  box-shadow: 7px 6px 10px 0px rgba(0,0,0,0.27);
+  -webkit-box-shadow: 7px 6px 10px 0px rgba(0,0,0,0.27);
+  -moz-box-shadow: 7px 6px 19px 0px rgba(0,0,0,0.27);
   margin-top: 20px;
-  min-width: 230px;
+  min-width: 400px;
 
 }
 
+.loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #000000b9;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+.register-now-btn {
+  font-weight: 600;
+  margin-top: 40px;
+}
+
+.register-now-btn:hover {
+  color: rgba(97, 213, 95, 0.528);
+}
 
 .continue-btn:hover {
   background-color: rgba(97, 213, 95, 0.528);
+}
+
+
+.table-reservation-form {
+  width: 50vw;
+  min-width: 300px;
+  max-width: 450px;
+}
+
+.table-reservation-form h3 {
+  color: rgba(255, 255, 255, 0.548);
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.table-reservation-date-container {
+  margin-bottom: 50px;
+}
+
+.date-time-picker {
+  background-color: rgba(15, 15, 16, 0.235);
+  width: 90%;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+
+}
+
+div.react-datetime-picker__wrapper {
+  border: none;
+  color: rgb(208, 228, 231);
+  width: 100%;
+  overflow: visible;
+  justify-content: center;
+  padding-left: 30px;
+
+}
+
+div.react-datetime-picker__inputGroup {
+  flex-grow: 0;
+}
+div.react-datetime-picker__wrapper input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  color: rgb(208, 228, 231);
+  /* font-size: 20px; */
+  /* overflow: visible; */
+
+}
+
+div.react-datetime-picker__wrapper select {color: rgb(208, 228, 231);}
+
+div.react-datetime-picker__wrapper option {color: rgb(0, 0, 0);}
+
+div.react-datetime-picker__wrapper button svg {stroke: rgb(208, 228, 231);} 
+
+
+
+.table-reservation-info-container {
+  /* margin: 20px; */
+}
+
+
+.see-tables-button {
+  background-color: rgb(81, 81, 81);
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
