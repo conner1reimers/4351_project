@@ -11,6 +11,9 @@ function Input(props) {
     props.onInput(props.id, inputState);
   }, [inputState]);
 
+  console.log(`inputstate: ${inputState}`);
+  console.log(`value: ${props.value}`);
+
   return (
     <div className="input-field-container">
       <input

@@ -10,26 +10,13 @@ import {
 import Welcome from './components/pages/welcome/Welcome';
 import TableSearch from './components/pages/tableSearch/TableSearch';
 import Root from './components/pages/Root';
-// const router = createBrowserRouter(
-//   [
-//     {
-//       path: '/',
-//       element: <Welcome />,
-//       children: [
-//         {
-//           path: 'tables',
-//           element: <TableSearch />
-//         }
-//       ]
-//     }
-//   ],
-//   { basename: '/home' }
-// );
+import SignUp from './components/pages/signUp/SignUp';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Root />}>
       <Route path="/login" element={<Welcome />} />
+      <Route path="/signup" element={<SignUp />} />
       <Route path="/tables" element={<TableSearch />} />
     </Route>
   )

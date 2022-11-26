@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useOutletContext } from 'react-router-dom';
 import { useHttpClient } from '../../../hooks/http-hook';
 import Loading from '../../shared/Loading';
 
@@ -7,26 +7,13 @@ const SignInButtons = (props) => {
   const { isLoading, sendRequest } = useHttpClient();
   const navigate = useNavigate();
 
+  const [userInfo, setUserInfo] = useOutletContext();
+
   // Register the user a new account
   const signUp = async () => {
     console.log(props.formState);
-    try {
-      const response = await sendRequest(
-        `/users/signup/`,
-        'POST',
-        JSON.stringify({
-          email: props.formState.email,
-          username: props.formState.username,
-          password: props.formState.password
-        }),
-        { 'Content-Type': 'application/json' }
-      );
-      if (response.success) {
-        goToTables();
-      }
-    } catch (error) {
-      alert('An error occurred, could not sign up');
-    }
+    setUserInfo(props.formState);
+    navigate('/signup');
   };
 
   // console.log(useUserInfoState);
