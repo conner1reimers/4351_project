@@ -4,7 +4,8 @@ import { useHttpClient } from '../../hooks/http-hook';
 
 const Root = () => {
   const [userInfo, setUserInfo] = useState({
-    user: null
+    user: null,
+    tables: []
   });
 
   const { isLoading, sendRequest } = useHttpClient();

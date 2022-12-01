@@ -7,6 +7,7 @@ import getRandomTables from '../../../util/get-tables';
 import '../../../App.css';
 import 'react-datetime/css/react-datetime.css';
 import ViewTables from './viewTables';
+import axios from 'axios';
 const tableMap = {
   2: 0,
   4: 1,
@@ -21,32 +22,95 @@ const possibleCombinations = {
   8: [[2, 2, 2, 2], [2, 2, 4], [4, 4], [6, 2], [8]]
 };
 
+function checkHoliday(dt_date) {
+  // check simple dates (month/date - no leading zeroes)
+  var n_date = dt_date.getDate(),
+    n_month = dt_date.getMonth() + 1;
+  var s_date1 = n_month + '/' + n_date;
+
+  if (
+    s_date1 == '1/1' || // New Year's Day
+    s_date1 == '6/14' || // Flag Day
+    s_date1 == '7/4' || // Independence Day
+    s_date1 == '11/11' || // Veterans Day
+    s_date1 == '12/25' // Christmas Day
+  )
+    return true;
+
+  // weekday from beginning of the month (month/num/day)
+  var n_wday = dt_date.getDay(),
+    n_wnum = Math.floor((n_date - 1) / 7) + 1;
+  var s_date2 = n_month + '/' + n_wnum + '/' + n_wday;
+
+  if (
+    s_date2 == '1/3/1' || // Birthday of Martin Luther King, third Monday in January
+    s_date2 == '2/3/1' || // Washington's Birthday, third Monday in February
+    s_date2 == '5/3/6' || // Armed Forces Day, third Saturday in May
+    s_date2 == '9/1/1' || // Labor Day, first Monday in September
+    s_date2 == '10/2/1' || // Columbus Day, second Monday in October
+    s_date2 == '11/4/4' // Thanksgiving Day, fourth Thursday in November
+  )
+    return true;
+
+  // weekday number from end of the month (month/num/day)
+  var dt_temp = new Date(dt_date);
+  dt_temp.setDate(1);
+  dt_temp.setMonth(dt_temp.getMonth() + 1);
+  dt_temp.setDate(dt_temp.getDate() - 1);
+  n_wnum = Math.floor((dt_temp.getDate() - n_date - 1) / 7) + 1;
+  var s_date3 = n_month + '/' + n_wnum + '/' + n_wday;
+
+  if (
+    s_date3 == '5/1/1' // Memorial Day, last Monday in May
+  )
+    return true;
+
+  // misc complex dates
+  if (
+    s_date1 == '1/20' &&
+    (dt_date.getFullYear() - 1937) % 4 == 0
+    // Inauguration Day, January 20th every four years, starting in 1937.
+  )
+    return true;
+
+  if (
+    n_month == 11 &&
+    n_date >= 2 &&
+    n_date < 9 &&
+    n_wday == 2
+    // Election Day, Tuesday on or after November 2.
+  )
+    return true;
+
+  return false;
+}
+
 const TableSearch = () => {
-  const [userInfo, setUserInfo] = useOutletContext();
+  const [globalState, setGlobalState] = useOutletContext();
   const [dateChosen, setDateChosen] = useState(new Date());
-  const [tableState, setTableState] = useState(null);
   const [formIsValid, setFormIsValid] = useState(false);
 
   const [formState, setFormState] = useState({
     numOfGuests: 0,
-    name: userInfo.name || '',
-    email: userInfo.email || '',
-    phone: userInfo.phone || ''
+    name: globalState.userInfo?.name || '',
+    email: globalState.userInfo?.email || '',
+    phone: globalState.userInfo?.phone || ''
   });
 
-  useEffect(() => {
-    setTableState(getRandomTables());
-  }, []);
+  // useEffect(() => {
+  //   setTableState(getRandomTables());
+  //   console.log(globalState);
+  // }, []);
 
-  useEffect(() => {
-    console.log('RANDOM TABLES:');
-    console.log(tableState);
-  }, [tableState]);
+  // useEffect(() => {
+  //   console.log('RANDOM TABLES:');
+  //   console.log(tableState);
+  // }, [tableState]);
 
   useEffect(() => {
     console.log('USER DATA:');
-    console.log(userInfo);
-  }, [userInfo]);
+    console.log(globalState.userInfo);
+  }, [globalState.userInfo]);
 
   // When the user types in the input form
   const onInput = (id, value) => {
@@ -66,36 +130,70 @@ const TableSearch = () => {
     }
   }, [formState]);
 
-  const reserveTable = (numberOfGuests, tablesToReserve) => {
+  const reserveTable = async (numberOfGuests, tablesToReserve) => {
     console.log(`Party of ${numberOfGuests}...`);
     console.log(`Reserving ${tablesToReserve.length} tables...`);
+
+    const allReservedTableNumbers = [];
+
     tablesToReserve.forEach((element) => {
       console.log('RESERVING ' + 1 + ' ' + element + ' SEATED TABLE');
-      setTableState((prev) => {
+      console.log(`el: ${element}`);
+      const tableArray = globalState.finalTables;
+      const tableIds = tableArray[tableMap[element]].tableIds;
+      const reservedTable = tableIds.shift();
+
+      allReservedTableNumbers.push(reservedTable);
+
+      tableArray[tableMap[element]] = {
+        ...globalState.finalTables[tableMap[element]],
+        reserved: globalState.finalTables[[tableMap[element]]].reserved + 1,
+        open: globalState.finalTables[[tableMap[element]]].open - 1,
+        tableIds: tableIds
+      };
+
+      setGlobalState((prev) => {
         return {
           ...prev,
-          [tableMap[element]]: {
-            ...prev[tableMap[element]],
-            reserved: prev[[tableMap[element]]].reserved + 1,
-            open: prev[[tableMap[element]]].open - 1
-          }
+          finalTables: tableArray
         };
       });
     });
+    let reservedMsg = 'You just reserved table #';
 
-    // Send request to server to reserve the table & add to database
-    //
-    //
-    // .....
-    //
-    //
+    let index = 1;
+    for (const value of allReservedTableNumbers) {
+      await axios.post(
+        `http://127.0.0.1:5000/user/reserve?id=${value}&nm=${formState.name}&dt=${new Date(
+          new Date(dateChosen).getTime() - new Date().getTimezoneOffset() * 60 * 1000
+        )
+          .toJSON()
+          .slice(0, 19)
+          .replace('T', ' ')}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            accept: 'application/json'
+          },
+          withCredentials: true
+        }
+      );
+
+      reservedMsg = reservedMsg + value;
+      if (allReservedTableNumbers.length > index) {
+        reservedMsg = reservedMsg + ' and ';
+      }
+      index++;
+    }
+    console.log(reservedMsg);
+    alert(reservedMsg);
   };
 
   const checkIfCanReserve = (tables) => {
-    let currentTwoTableOpen = tableState[0].open;
-    let currentFourTableOpen = tableState[1].open;
-    let currentSixTableOpen = tableState[2].open;
-    let currentEightTableOpen = tableState[3].open;
+    let currentTwoTableOpen = globalState.finalTables[0].open;
+    let currentFourTableOpen = globalState.finalTables[1].open;
+    let currentSixTableOpen = globalState.finalTables[2].open;
+    let currentEightTableOpen = globalState.finalTables[3].open;
 
     let canReserve = true;
 
@@ -131,8 +229,7 @@ const TableSearch = () => {
     let comboIsPossible = false;
 
     if (numberOfGuests <= 4) {
-      if (tableState[0].open < 2) {
-        // User needs to wait
+      if (globalState.finalTables[0].open < 2) {
         alert('THERE ARE NO TABLES AVAILABLE RIGHT NOW');
       } else {
         reserveTable(numberOfGuests, [2, 2]);
@@ -163,27 +260,27 @@ const TableSearch = () => {
     e.preventDefault();
     const numberOfGuests = formState.numOfGuests;
 
-    // tableState[0] holds 2 seated tables, tableState[1] holds 4 seated tables, and so on...
+    // globalState.finalTables[0] holds 2 seated tables, globalState.finalTables[1] holds 4 seated tables, and so on...
     if (numberOfGuests <= 2) {
-      if (tableState[0].open === 0) {
+      if (globalState.finalTables[0].open === 0) {
         // User needs to wait until one is available
       } else {
         reserveTable(numberOfGuests, [2]);
       }
     } else if (numberOfGuests <= 4) {
-      if (tableState[1].open === 0) {
+      if (globalState.finalTables[1].open === 0) {
         combineTables(numberOfGuests);
       } else {
         reserveTable(numberOfGuests, [4]);
       }
     } else if (numberOfGuests <= 6) {
-      if (tableState[2].open === 0) {
+      if (globalState.finalTables[2].open === 0) {
         combineTables(numberOfGuests);
       } else {
         reserveTable(numberOfGuests, [6]);
       }
     } else if (numberOfGuests <= 8) {
-      if (tableState[3].open === 0) {
+      if (globalState.finalTables[3].open === 0) {
         combineTables(numberOfGuests);
       } else {
         reserveTable(numberOfGuests, [8]);
@@ -191,20 +288,26 @@ const TableSearch = () => {
     }
   };
 
+  const changeDate = (e) => {
+    const isHoliday = checkHoliday(e);
+
+    if (isHoliday) {
+      alert('This is a busy day, if you do not show up you will be charged a minimum of $10.');
+    }
+
+    setDateChosen(e);
+  };
+
   return (
     <div className="App" style={{ justifyContent: 'flex-start', marginTop: '15vh' }}>
       <div className="welcome-header-container">
         <h1 className="welcome-header">Reserve a table...</h1>
       </div>
-      <ViewTables />
+      <ViewTables tables={globalState.finalTables} />
       <form className="table-reservation-form" type="submit" onSubmit={seeOpenTables}>
         <div className="table-reservation-date-container">
           <h3>Please select a time and date for your reservation</h3>
-          <DateTimePicker
-            className="date-time-picker"
-            onChange={setDateChosen}
-            value={dateChosen}
-          />
+          <DateTimePicker className="date-time-picker" onChange={changeDate} value={dateChosen} />
         </div>
         <div className="table-reservation-info-container">
           <h3>Please enter the following information for your reservation</h3>
@@ -236,7 +339,7 @@ const TableSearch = () => {
 
         <div className="table-reservation-button-container">
           {formIsValid ? (
-            <button className="reset-btn see-tables-button">See Open Tables</button>
+            <button className="reset-btn see-tables-button">Reserve a table</button>
           ) : null}
         </div>
       </form>

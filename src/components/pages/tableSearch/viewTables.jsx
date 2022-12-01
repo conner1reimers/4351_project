@@ -1,49 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const ViewTables = () => {
-  const [data, setData] = useState({ data: [] });
-  const [isLoading, setIsLoading] = useState(false);
-  const [err, setErr] = useState('');
+const ViewTables = (props) => {
+  const [data, setData] = useState([]);
 
   const handleClick = async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await axios.get('http://127.0.0.1:5000/tables/get/all', {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      console.log('data is: ', JSON.stringify(data, null, 4));
-
-      setData(data);
-    } catch (err) {
-      setErr(err.message);
-    } finally {
-      setIsLoading(false);
-    }
+    setData(props.tables);
+    console.log(props);
   };
 
-  console.log(data);
+  useEffect(() => {
+    setData(props.tables);
+    console.log(props.tables);
+  }, [props.tables]);
 
   return (
-    <div>
-      {err && <h2>{err}</h2>}
+    <div
+      style={{
+        flexDirection: 'column',
+        backgroundColor: '#59737252',
+        width: '70%',
+        padding: '35px'
+      }}>
+      <button className=".btn" onClick={handleClick}>
+        See Open Tables
+      </button>
 
-      <button onClick={handleClick}>See Open Tables</button>
-
-      {isLoading && <h2>Loading...</h2>}
-
-      {data.data.map((tables) => {
-        return (
-          <div key={tables.tableNumber}>
-            <h2>{tables.tableNumber}</h2>
-            <h2>{tables.numSeats}</h2>
-            <br />
-          </div>
-        );
-      })}
+      {data
+        ? data.map((tables) => {
+            return (
+              <div key={tables.maxSeats} style={{ flexDirection: 'row' }}>
+                <h2>{tables.maxSeats} table seats:</h2>
+                <div>
+                  {tables.tableIds.map((el) => {
+                    return <div key={el}>Table #{el}</div>;
+                  })}
+                </div>
+              </div>
+            );
+          })
+        : null}
     </div>
   );
 };
