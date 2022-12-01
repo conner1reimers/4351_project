@@ -8,7 +8,7 @@ const SignUpForm = (props) => {
   console.log(props.username);
 
   const { isLoading, sendRequest } = useHttpClient();
-  const [userInfo, setUserInfo] = useOutletContext();
+  const [globalState, setGlobalState] = useOutletContext();
 
   const navigate = useNavigate();
 
@@ -29,7 +29,6 @@ const SignUpForm = (props) => {
   };
 
   const signUp = async (e) => {
-    console.log('HSDFIOhs');
     e.preventDefault();
     const formFilled = formIsFilled();
     if (!formFilled) {
@@ -37,7 +36,10 @@ const SignUpForm = (props) => {
       return;
     }
 
-    setUserInfo(props.formState);
+    setGlobalState((prevState) => ({
+      ...prevState,
+      userInfo: props.formState
+    }));
 
     try {
       const response = await sendRequest(

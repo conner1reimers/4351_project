@@ -86,30 +86,27 @@ function checkHoliday(dt_date) {
 }
 
 const TableSearch = () => {
-  const [globalState, setGlobalState] = useOutletContext();
   const [dateChosen, setDateChosen] = useState(new Date());
   const [formIsValid, setFormIsValid] = useState(false);
+  const [globalState, setGlobalState] = useOutletContext();
 
   const [formState, setFormState] = useState({
     numOfGuests: 0,
-    name: globalState.userInfo?.name || '',
-    email: globalState.userInfo?.email || '',
-    phone: globalState.userInfo?.phone || ''
+    ...globalState.userInfo
   });
-
-  // useEffect(() => {
-  //   setTableState(getRandomTables());
-  //   console.log(globalState);
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log('RANDOM TABLES:');
-  //   console.log(tableState);
-  // }, [tableState]);
 
   useEffect(() => {
     console.log('USER DATA:');
     console.log(globalState.userInfo);
+
+    if (globalState.userInfo && globalState.userInfo.userName) {
+      setFormState((prev) => ({
+        ...prev,
+        name: globalState.userInfo?.userName || '',
+        email: globalState.userInfo?.email || '',
+        phone: globalState.userInfo?.phoneNumber || ''
+      }));
+    }
   }, [globalState.userInfo]);
 
   // When the user types in the input form
@@ -314,21 +311,21 @@ const TableSearch = () => {
           <div style={{ margin: '50px', marginTop: '20px' }}>
             <Input type="text" id="numOfGuests" onInput={onInput} placeholder="Number of guests" />
             <Input
-              value={formState.name}
+              value={globalState.userInfo.userName}
               type="text"
               id="name"
               onInput={onInput}
               placeholder="Name for reservation"
             />
             <Input
-              value={formState.email}
+              value={globalState.userInfo.email}
               type="text"
               id="email"
               onInput={onInput}
               placeholder="Email address"
             />
             <Input
-              value={formState.phone}
+              value={globalState.userInfo.phoneNumber}
               type="text"
               id="phone"
               onInput={onInput}

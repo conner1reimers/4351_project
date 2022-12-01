@@ -27,14 +27,14 @@ function SignUp() {
     });
   };
 
-  const [userInfo, setUserInfo] = useOutletContext();
+  const [globalState, setGlobalState] = useOutletContext();
 
   useEffect(() => {
     setFormState((prev) => ({
       ...prev,
-      ...userInfo
+      ...globalState.userInfo
     }));
-  }, [userInfo]);
+  }, [globalState]);
 
   return (
     <div className="App">
@@ -47,9 +47,9 @@ function SignUp() {
         <SignUpForm
           onInput={onInput}
           formState={formState}
-          username={userInfo.username}
-          email={userInfo.email}
-          password={userInfo.password}
+          username={globalState.userInfo.username}
+          email={globalState.userInfo.email}
+          password={globalState.userInfo.password}
         />
       </div>
     </div>

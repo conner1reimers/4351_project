@@ -8,11 +8,14 @@ const SignInButtons = (props) => {
   const { isLoading, sendRequest } = useHttpClient();
   const navigate = useNavigate();
 
-  const [userInfo, setUserInfo] = useOutletContext();
+  const [globalState, setGlobalState] = useOutletContext();
 
   // Register the user a new account
   const signUp = async () => {
-    setUserInfo(props.formState);
+    setGlobalState((prevState) => ({
+      ...prevState,
+      userInfo: props.formState
+    }));
     navigate('/signup');
   };
 
@@ -26,8 +29,13 @@ const SignInButtons = (props) => {
           ps: props.formState.password
         })
         .then(function (response) {
-          console.log(response);
-          alert('Success');
+          alert('Successfully logged in');
+
+          setGlobalState((prevState) => ({
+            ...prevState,
+            userInfo: response.data.data[0]
+          }));
+
           goToTables();
         })
         .catch(function (error) {
@@ -48,10 +56,8 @@ const SignInButtons = (props) => {
       {isLoading ? <Loading /> : null}
 
       <div className="sign-in-buttons-container">
-        <button
-          className="reset-btn continue-btn continue-btn-green"
-          onClick={props.isOnRegisterMode ? signUp : signIn}>
-          {props.isOnRegisterMode ? 'Sign up!' : 'Sign in'}
+        <button className="reset-btn continue-btn continue-btn-green" onClick={signIn}>
+          Sign in
         </button>
       </div>
 
@@ -62,10 +68,8 @@ const SignInButtons = (props) => {
       </div>
 
       <div className="sign-in-buttons-container">
-        <button onClick={props.changeFormMode} className="reset-btn register-now-btn">
-          {props.isOnRegisterMode
-            ? 'Already have an account? Sign in!'
-            : 'Need an account? Register now!'}
+        <button onClick={signUp} className="reset-btn register-now-btn">
+          Need an account? Register now!
         </button>
       </div>
     </div>

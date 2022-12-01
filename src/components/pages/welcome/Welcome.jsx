@@ -88,7 +88,7 @@ function Welcome() {
     <div className="App">
       <div className="welcome-header-container">
         <h1 className="welcome-header">Welcome to the restaurant!</h1>
-        <h2 className="welcome-subheader">{isOnRegisterMode ? 'Sign up!' : 'Sign in!'}</h2>
+        <h2 className="welcome-subheader">Sign in!</h2>
       </div>
       <div>
         <SignInForm onInput={onInput} isOnRegisterMode={isOnRegisterMode} />

@@ -3,7 +3,7 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { useHttpClient } from '../../hooks/http-hook';
 
 const Root = () => {
-  const [userInfo, setUserInfo] = useState({
+  const [globalState, setGlobalState] = useState({
     user: null,
     tables: []
   });
@@ -11,24 +11,9 @@ const Root = () => {
   const { isLoading, sendRequest } = useHttpClient();
   const navigate = useNavigate();
 
-  const checkLoggedInUser = async () => {
-    let result;
-    try {
-      result = await sendRequest('/users/checkForCookie');
-      if (result) {
-        setUserInfo(result);
-        navigate('/tables');
-      } else {
-        navigate('/login');
-      }
-    } catch (err) {
-      navigate('/login');
-    }
-  };
-
   // Check if user has an account saved in cookies
   useEffect(() => {
-    checkLoggedInUser();
+    navigate('/login');
   }, []);
 
   return (
@@ -38,7 +23,7 @@ const Root = () => {
           <h1 className="welcome-subheader">Loading....</h1>
         </div>
       ) : (
-        <Outlet context={[userInfo, setUserInfo]} />
+        <Outlet context={[globalState, setGlobalState]} />
       )}
     </>
   );

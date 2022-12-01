@@ -16,9 +16,7 @@ const SignInForm = (props) => {
           onInput={onInput}
           placeholder={props.isOnRegisterMode ? 'Email' : 'Email/Username'}
         />
-        {props.isOnRegisterMode ? (
-          <Input type="text" id="username" onInput={onInput} placeholder="Username" />
-        ) : null}
+
         <Input type="password" id="password" onInput={onInput} placeholder="Password" />
       </form>
     </div>
