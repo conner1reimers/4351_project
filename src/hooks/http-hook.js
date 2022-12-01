@@ -7,7 +7,7 @@ export const useHttpClient = () => {
     // TRY CATCH BLOCK FOR SENDING REQUEST WITH THE METHOD, BODY, AND HEADERS WE GIVE IT
     setIsLoading(true);
     try {
-      const response = await fetch(`BACKEND_APP_URL/${urlPath}`, {
+      const response = await fetch(`http://127.0.0.1:5000${urlPath}`, {
         method,
         body,
         headers

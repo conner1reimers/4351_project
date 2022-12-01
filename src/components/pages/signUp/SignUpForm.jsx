@@ -43,7 +43,7 @@ const SignUpForm = (props) => {
 
     try {
       const response = await sendRequest(
-        `/users/signup/`,
+        `/users/signup`,
         'POST',
         JSON.stringify({
           email: props.formState.email,
