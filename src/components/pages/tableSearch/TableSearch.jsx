@@ -6,7 +6,7 @@ import Datetime from 'react-datetime';
 import getRandomTables from '../../../util/get-tables';
 import '../../../App.css';
 import 'react-datetime/css/react-datetime.css';
-
+import ViewTables from './viewTables';
 const tableMap = {
   2: 0,
   4: 1,
@@ -196,6 +196,7 @@ const TableSearch = () => {
       <div className="welcome-header-container">
         <h1 className="welcome-header">Reserve a table...</h1>
       </div>
+      <ViewTables />
       <form className="table-reservation-form" type="submit" onSubmit={seeOpenTables}>
         <div className="table-reservation-date-container">
           <h3>Please select a time and date for your reservation</h3>
