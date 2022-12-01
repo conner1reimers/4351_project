@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, useNavigate, useOutletContext } from 'react-router-dom';
 import { useHttpClient } from '../../../hooks/http-hook';
 import Loading from '../../shared/Loading';
+import axios from 'axios';
 
 const SignInButtons = (props) => {
   const { isLoading, sendRequest } = useHttpClient();
@@ -11,7 +12,6 @@ const SignInButtons = (props) => {
 
   // Register the user a new account
   const signUp = async () => {
-    console.log(props.formState);
     setUserInfo(props.formState);
     navigate('/signup');
   };
@@ -20,18 +20,19 @@ const SignInButtons = (props) => {
   // Sign the user in
   const signIn = async () => {
     try {
-      const response = await sendRequest(
-        `/users/signin/`,
-        'POST',
-        JSON.stringify({
-          username: props.formState.username,
-          password: props.formState.password
-        }),
-        { 'Content-Type': 'application/json' }
-      );
-      if (response.success) {
-        goToTables();
-      }
+      axios
+        .post('http://127.0.0.1:5000/user/login', {
+          em: props.formState.email,
+          ps: props.formState.password
+        })
+        .then(function (response) {
+          console.log(response);
+          alert('Success');
+          goToTables();
+        })
+        .catch(function (error) {
+          alert(error.response.data.message);
+        });
     } catch (error) {
       alert('An error occurred, could not sign in. Please check your credentials.');
     }
